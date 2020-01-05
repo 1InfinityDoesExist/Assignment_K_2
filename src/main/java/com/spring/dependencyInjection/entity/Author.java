@@ -70,7 +70,7 @@ public class Author implements Serializable {
 
 	@Column(name = "organizations_url")
 	@ApiModelProperty(notes = "Property of Author :- organizations_url")
-	private String subscriptionsUrl;
+	private String organizationsUrl;
 
 	@Column(name = "repos_url")
 	@ApiModelProperty(notes = "Property of Author:- repos_url")
@@ -92,8 +92,11 @@ public class Author implements Serializable {
 	@ApiModelProperty(notes = "Property of Author:- site_admin")
 	private Boolean siteAdmin;
 
-	@OneToOne(fetch = FetchType.EAGER, cascade = {
-			CascadeType.REFRESH }, orphanRemoval = true, mappedBy = "author_id")
+	@Column(name = "subscriptions_url")
+	@ApiModelProperty(notes = "Property of Author:- subscriptions_url")
+	private String subscriptionsUrl;
+
+	@OneToOne(fetch = FetchType.EAGER, cascade = { CascadeType.REFRESH }, orphanRemoval = true, mappedBy = "author_id")
 	@JsonIgnoreProperties("author_id")
 	private Commits commits;
 
@@ -112,7 +115,8 @@ public class Author implements Serializable {
 
 	public Author(Long id, String login, String nodeId, String avatarUrl, String gravatarId, String url, String htmlUrl,
 			String followersUrl, String followingUrl, String gistsUrl, String starredUrl, String subscriptionsUrl,
-			String reposUrl, String eventsUrl, String receivedEventsUrl, String type, Boolean siteAdmin) {
+			String reposUrl, String eventsUrl, String receivedEventsUrl, String type, Boolean siteAdmin,
+			String organizationsUrl, Commits commits) {
 		super();
 		this.id = id;
 		this.login = login;
@@ -131,6 +135,8 @@ public class Author implements Serializable {
 		this.receivedEventsUrl = receivedEventsUrl;
 		this.type = type;
 		this.siteAdmin = siteAdmin;
+		this.organizationsUrl = organizationsUrl;
+		this.commits = commits;
 	}
 
 	public Long getId() {
@@ -269,11 +275,20 @@ public class Author implements Serializable {
 		this.siteAdmin = siteAdmin;
 	}
 
+	public String getOrganizationsUrl() {
+		return organizationsUrl;
+	}
+
+	public void setOrganizationsUrl(String organizationsUrl) {
+		this.organizationsUrl = organizationsUrl;
+	}
+
 	@Override
 	public int hashCode() {
 		final int prime = 31;
 		int result = 1;
 		result = prime * result + ((avatarUrl == null) ? 0 : avatarUrl.hashCode());
+		result = prime * result + ((commits == null) ? 0 : commits.hashCode());
 		result = prime * result + ((eventsUrl == null) ? 0 : eventsUrl.hashCode());
 		result = prime * result + ((followersUrl == null) ? 0 : followersUrl.hashCode());
 		result = prime * result + ((followingUrl == null) ? 0 : followingUrl.hashCode());
@@ -283,6 +298,7 @@ public class Author implements Serializable {
 		result = prime * result + ((id == null) ? 0 : id.hashCode());
 		result = prime * result + ((login == null) ? 0 : login.hashCode());
 		result = prime * result + ((nodeId == null) ? 0 : nodeId.hashCode());
+		result = prime * result + ((organizationsUrl == null) ? 0 : organizationsUrl.hashCode());
 		result = prime * result + ((receivedEventsUrl == null) ? 0 : receivedEventsUrl.hashCode());
 		result = prime * result + ((reposUrl == null) ? 0 : reposUrl.hashCode());
 		result = prime * result + ((siteAdmin == null) ? 0 : siteAdmin.hashCode());
@@ -306,6 +322,11 @@ public class Author implements Serializable {
 			if (other.avatarUrl != null)
 				return false;
 		} else if (!avatarUrl.equals(other.avatarUrl))
+			return false;
+		if (commits == null) {
+			if (other.commits != null)
+				return false;
+		} else if (!commits.equals(other.commits))
 			return false;
 		if (eventsUrl == null) {
 			if (other.eventsUrl != null)
@@ -352,6 +373,11 @@ public class Author implements Serializable {
 				return false;
 		} else if (!nodeId.equals(other.nodeId))
 			return false;
+		if (organizationsUrl == null) {
+			if (other.organizationsUrl != null)
+				return false;
+		} else if (!organizationsUrl.equals(other.organizationsUrl))
+			return false;
 		if (receivedEventsUrl == null) {
 			if (other.receivedEventsUrl != null)
 				return false;
@@ -397,7 +423,7 @@ public class Author implements Serializable {
 				+ followersUrl + ", followingUrl=" + followingUrl + ", gistsUrl=" + gistsUrl + ", starredUrl="
 				+ starredUrl + ", subscriptionsUrl=" + subscriptionsUrl + ", reposUrl=" + reposUrl + ", eventsUrl="
 				+ eventsUrl + ", receivedEventsUrl=" + receivedEventsUrl + ", type=" + type + ", siteAdmin=" + siteAdmin
-				+ "]";
+				+ ", organizationsUrl=" + organizationsUrl + ", commits=" + commits + "]";
 	}
 
 }
