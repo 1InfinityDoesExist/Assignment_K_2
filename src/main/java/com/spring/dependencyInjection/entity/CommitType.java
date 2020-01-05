@@ -18,7 +18,7 @@ import org.hibernate.usertype.UserType;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 
-public class AuthorDetailsType implements UserType {
+public class CommitType implements UserType {
 
 	@Override
 	public int[] sqlTypes() {
@@ -27,9 +27,9 @@ public class AuthorDetailsType implements UserType {
 	}
 
 	@Override
-	public Class returnedClass() {
+	public Class<?> returnedClass() {
 		// TODO Auto-generated method stub
-		return CommitAuthorDetails.class;
+		return Commit.class;
 	}
 
 	@Override
@@ -51,18 +51,16 @@ public class AuthorDetailsType implements UserType {
 	public Object nullSafeGet(ResultSet rs, String[] names, SharedSessionContractImplementor session, Object owner)
 			throws HibernateException, SQLException {
 		// TODO Auto-generated method stub
-		final String cellContent = names[0];
+		final String cellContent = rs.getString(names[0]);
 		if (cellContent == null) {
 			return null;
 		}
-
 		try {
 
 			final ObjectMapper objectMapper = new ObjectMapper();
-			return objectMapper.readValue(cellContent.getBytes(), returnedClass());
-
+			return objectMapper.readValue(cellContent.getBytes("UTF-8"), returnedClass());
 		} catch (final Exception ex) {
-			throw new RuntimeException("Failed to convert string:-" + ex.getMessage());
+			throw new RuntimeException("Failed To Convert String:-" + ex.toString());
 		}
 	}
 
@@ -70,20 +68,20 @@ public class AuthorDetailsType implements UserType {
 	public void nullSafeSet(PreparedStatement st, Object value, int index, SharedSessionContractImplementor session)
 			throws HibernateException, SQLException {
 		// TODO Auto-generated method stub
+
 		if (value == null) {
 			st.setNull(index, Types.OTHER);
 			return;
 		}
 		try {
-
 			final ObjectMapper objectMapper = new ObjectMapper();
-			final StringWriter stringWriter = new StringWriter();
-			objectMapper.writeValue(stringWriter, value);
-			stringWriter.flush();
-			stringWriter.close();
-			st.setObject(index, stringWriter.toString(), Types.OTHER);
+			final StringWriter w = new StringWriter();
+			objectMapper.writeValue(w, value);
+			w.flush();
+			w.close();
+			st.setObject(index, w.toString(), Types.OTHER);
 		} catch (final Exception ex) {
-			throw new RuntimeException("Failed to Convert String :-" + ex.getMessage());
+			throw new RuntimeException("Failed To Convert String:-" + ex.getMessage());
 		}
 
 	}
@@ -91,20 +89,18 @@ public class AuthorDetailsType implements UserType {
 	@Override
 	public Object deepCopy(Object value) throws HibernateException {
 		// TODO Auto-generated method stub
-
 		try {
-			ByteArrayOutputStream bos = new ByteArrayOutputStream();
-			ObjectOutputStream oos = new ObjectOutputStream(bos);
-			oos.writeObject(value);
+			ByteArrayOutputStream baos = new ByteArrayOutputStream();
+			ObjectOutputStream oos = new ObjectOutputStream(baos);
+			oos.writeObject(baos);
 			oos.flush();
 			oos.close();
-			bos.close();
-			ByteArrayInputStream bias = new ByteArrayInputStream(bos.toByteArray());
-			return new ObjectInputStream(bias).readObject();
+			baos.close();
+			ByteArrayInputStream bais = new ByteArrayInputStream(baos.toByteArray());
+			return new ObjectInputStream(bais).readObject();
 		} catch (ClassNotFoundException | IOException ex) {
-			throw new HibernateException(ex.toString());
+			throw new HibernateException(ex.getMessage());
 		}
-
 	}
 
 	@Override

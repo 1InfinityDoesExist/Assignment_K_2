@@ -2,12 +2,17 @@ package com.spring.dependencyInjection.entity;
 
 import java.io.Serializable;
 
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.OneToOne;
 import javax.persistence.Table;
+
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
@@ -86,6 +91,19 @@ public class Author implements Serializable {
 	@Column(name = "site_admin")
 	@ApiModelProperty(notes = "Property of Author:- site_admin")
 	private Boolean siteAdmin;
+
+	@OneToOne(fetch = FetchType.EAGER, cascade = {
+			CascadeType.REFRESH }, orphanRemoval = true, mappedBy = "author_id")
+	@JsonIgnoreProperties("author_id")
+	private Commits commits;
+
+	public Commits getCommits() {
+		return commits;
+	}
+
+	public void setCommits(Commits commits) {
+		this.commits = commits;
+	}
 
 	public Author() {
 		super();

@@ -18,7 +18,7 @@ import org.hibernate.usertype.UserType;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 
-public class CommitCommitterTypes implements UserType {
+public class CommitAuthorDetailsType implements UserType {
 
 	@Override
 	public int[] sqlTypes() {
@@ -29,7 +29,7 @@ public class CommitCommitterTypes implements UserType {
 	@Override
 	public Class returnedClass() {
 		// TODO Auto-generated method stub
-		return CommitCommitter.class;
+		return CommitAuthorDetails.class;
 	}
 
 	@Override
@@ -51,16 +51,18 @@ public class CommitCommitterTypes implements UserType {
 	public Object nullSafeGet(ResultSet rs, String[] names, SharedSessionContractImplementor session, Object owner)
 			throws HibernateException, SQLException {
 		// TODO Auto-generated method stub
-		final String cellContent = rs.getString(names[0]);
+		final String cellContent = names[0];
 		if (cellContent == null) {
-			return cellContent;
+			return null;
 		}
 
 		try {
+
 			final ObjectMapper objectMapper = new ObjectMapper();
-			return objectMapper.readValue(cellContent.getBytes("UTF-8"), returnedClass());
+			return objectMapper.readValue(cellContent.getBytes(), returnedClass());
+
 		} catch (final Exception ex) {
-			throw new RuntimeException("Failed To Convert String" + ex.getMessage());
+			throw new RuntimeException("Failed to convert string:-" + ex.getMessage());
 		}
 	}
 
@@ -72,16 +74,16 @@ public class CommitCommitterTypes implements UserType {
 			st.setNull(index, Types.OTHER);
 			return;
 		}
-
 		try {
+
 			final ObjectMapper objectMapper = new ObjectMapper();
-			final StringWriter w = new StringWriter();
-			objectMapper.writeValue(w, value);
-			w.flush();
-			w.close();
-			st.setObject(index, w.toString(), Types.OTHER);
+			final StringWriter stringWriter = new StringWriter();
+			objectMapper.writeValue(stringWriter, value);
+			stringWriter.flush();
+			stringWriter.close();
+			st.setObject(index, stringWriter.toString(), Types.OTHER);
 		} catch (final Exception ex) {
-			throw new RuntimeException(ex.getMessage());
+			throw new RuntimeException("Failed to Convert String :-" + ex.getMessage());
 		}
 
 	}
@@ -89,8 +91,8 @@ public class CommitCommitterTypes implements UserType {
 	@Override
 	public Object deepCopy(Object value) throws HibernateException {
 		// TODO Auto-generated method stub
-		try {
 
+		try {
 			ByteArrayOutputStream bos = new ByteArrayOutputStream();
 			ObjectOutputStream oos = new ObjectOutputStream(bos);
 			oos.writeObject(value);
@@ -100,8 +102,9 @@ public class CommitCommitterTypes implements UserType {
 			ByteArrayInputStream bias = new ByteArrayInputStream(bos.toByteArray());
 			return new ObjectInputStream(bias).readObject();
 		} catch (ClassNotFoundException | IOException ex) {
-			throw new HibernateException(ex.getMessage());
+			throw new HibernateException(ex.toString());
 		}
+
 	}
 
 	@Override
@@ -111,7 +114,7 @@ public class CommitCommitterTypes implements UserType {
 	}
 
 	@Override
-	public Serializable disassemble(Object value) throws HibernateException {
+	public Serializable disassemble(final Object value) throws HibernateException {
 		// TODO Auto-generated method stub
 		return (Serializable) this.deepCopy(value);
 	}
