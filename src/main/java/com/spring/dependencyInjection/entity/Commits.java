@@ -84,6 +84,22 @@ public class Commits implements Serializable {
 	@ApiModelProperty(notes = "Commits Property :- Parents")
 	private List<Parents> parents = new ArrayList<Parents>();
 
+	public Author getAuthor_id() {
+		return author_id;
+	}
+
+	public void setAuthor_id(Author author_id) {
+		this.author_id = author_id;
+	}
+
+	public Committer getCommitter_id() {
+		return committer_id;
+	}
+
+	public void setCommitter_id(Committer committer_id) {
+		this.committer_id = committer_id;
+	}
+
 	public Commits() {
 		super();
 		// TODO Auto-generated constructor stub
