@@ -1,6 +1,8 @@
 package com.spring.dependencyInjection.controller;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.List;
 
 import javax.transaction.Transactional;
 
@@ -9,6 +11,7 @@ import org.json.JSONObject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
@@ -18,6 +21,7 @@ import com.mashape.unirest.http.HttpResponse;
 import com.mashape.unirest.http.JsonNode;
 import com.mashape.unirest.http.Unirest;
 import com.mashape.unirest.http.exceptions.UnirestException;
+import com.spring.dependencyInjection.constant.Constants;
 import com.spring.dependencyInjection.entity.Author;
 import com.spring.dependencyInjection.entity.Commit;
 import com.spring.dependencyInjection.entity.CommitAuthorDetails;
@@ -59,7 +63,8 @@ public class CommitController {
 	public ResponseEntity<?> createResource() {
 		logger.info("******************Inside CommitController Method************************");
 
-		final String url = "https://api.github.com/repositories/19438/commits";
+		List<Commits> listOfCommits = new ArrayList<Commits>();
+
 		Committer committerMain = null;
 		Author authorMain = null;
 		Commits commitsMain = null;
@@ -71,11 +76,12 @@ public class CommitController {
 		CommitVerification commitVerification = null;
 
 		try {
-			HttpResponse<JsonNode> jsonNode = Unirest.get(url).header("Content-Type", "application/json")
+			HttpResponse<JsonNode> jsonNode = Unirest.get(Constants.url).header("Content-Type", "application/json")
 					.header("Accept", "application/json").asJson();
 			JSONArray jsonArray = jsonNode.getBody().getArray();
 			logger.info("ArrayLenght is :-  " + jsonArray.length());
 			for (int iter = 0; iter < jsonArray.length(); iter++) {
+				commitsMain = new Commits();// Instantiating the Commits Class...!!!
 				JSONObject jsonObject = (JSONObject) jsonArray.get(iter);
 				for (Object object : jsonObject.keySet()) {
 					String propName = (String) object;
@@ -193,6 +199,7 @@ public class CommitController {
 							}
 
 						}
+						continue;
 
 					case "committer":
 						committerMain = new Committer();
@@ -306,21 +313,25 @@ public class CommitController {
 								logger.info("***************End Of Commiter Statement*****************");
 							}
 						}
+						continue;
 
 					case "sha":
+						logger.info("***********Setting the sha value*************");
 						Object shaObject = jsonObject.get(propName);
 						String shaValue = (String) shaObject;
 						commitsMain.setSha(shaValue);
 						continue;
 
 					case "node_id":
+						logger.info("*************Setting nodeId************");
 						Object nodeObject = jsonObject.get(propName);
 						String nodeValue = (String) nodeObject;
 						commitsMain.setNodeId(nodeValue);
 						continue;
 
 					case "commit":
-						commitMain = new Commit();
+						logger.info("*****************Commit Switch Case**************");
+						commitMain = new Commit();// Instantiating Commit Class
 						JSONObject cObject = (JSONObject) jsonObject.get(propName);
 						for (Object commitObj : cObject.keySet()) {
 							String cPropName = (String) commitObj;
@@ -355,8 +366,10 @@ public class CommitController {
 								}
 								// CommitAuthor
 								commitMain.setAuthor(commitAuthorMain);
+								continue;
 
 							case "committer":
+								logger.info("*************Inside commit commiter***************");
 								commitCommitterMain = new CommitCommitter();
 								JSONObject cCommitterObject = (JSONObject) cObject.get(cPropName);
 								for (Object ccObj : cCommitterObject.keySet()) {
@@ -387,14 +400,42 @@ public class CommitController {
 									}
 								}
 								commitMain.setCommitter(commitCommitterMain);
+								continue;
 
 							case "message":
+								logger.info("***********Inside Commit Message*****************");
 								Object messageObject = cObject.get(cPropName);
 								String messageValue = (String) messageObject;
 								commitMain.setMessage(messageValue);
 								continue;
 
 							case "tree":
+								logger.info("*************Inside Commit Tree****************");
+								commitTree = new CommitTree();
+								JSONObject treeObject = (JSONObject) cObject.get(cPropName);
+								for (Object treeObj : treeObject.keySet()) {
+									String treePropName = (String) treeObj;
+									switch (treePropName) {
+									case "sha":
+										Object shaObj = treeObject.get(treePropName);
+										String shaVal = (String) shaObj;
+										commitTree.setSha(shaVal);
+										continue;
+
+									case "url":
+										Object urlObj = treeObject.get(treePropName);
+										String urlVal = (String) urlObj;
+										commitTree.setUrl(urlVal);
+										continue;
+
+									default:
+										logger.info("**************End of Tree Switch Case***************");
+									}
+								}
+
+								// Tree Resource Persistence...
+								commitMain.setTree(commitTree);
+								continue;
 
 							case "url":
 								Object urlObject = cObject.get(cPropName);
@@ -402,35 +443,123 @@ public class CommitController {
 								commitMain.setUrl(urlString);
 								continue;
 							case "comment_count":
+								Object commentCountObject = cObject.get(cPropName);
+								Integer commentValue = (Integer) commentCountObject;
+								commitMain.setCommentCount(commentValue);
+								continue;
+
 							case "verification":
+								logger.info("**************Inside Commit Verification***********************");
+								commitVerification = new CommitVerification();
+								JSONObject verificationObject = (JSONObject) cObject.get(cPropName);
+								for (Object veriObject : verificationObject.keySet()) {
+									String veriProp = (String) veriObject;
+									switch (veriProp) {
+									case "verified":
+										Object verifidObject = verificationObject.get(veriProp);
+										Boolean verifiedValue = (Boolean) verifidObject;
+										commitVerification.setVerified(verifiedValue);
+										continue;
+
+									case "reason":
+										Object reasonObject = verificationObject.get(veriProp);
+										String reasonValue = (String) reasonObject;
+										commitVerification.setReason(reasonValue);
+										continue;
+
+									case "signature":
+										Object signatureObject = verificationObject.get(veriProp);
+										String signatureValue = (String) signatureObject;
+										commitVerification.setSignature(signatureValue);
+										continue;
+
+									case "payload":
+										Object payloadObject = verificationObject.get(veriProp);
+										String payloadValue = (String) payloadObject;
+										commitVerification.setPayload(payloadValue);
+										continue;
+
+									default:
+										logger.info("*****************End of Verification Switch Case**************");
+									}
+								}
+
+								// verificaito resource persisitence
+								commitMain.setVerification(commitVerification);
+								continue;
+
 							default:
 								logger.info("*******End of Commit object Case******");
 							}
+
 						}
+						// Commits Commit final Instance Set
+						commitsMain.setCommit(commitMain);
+						continue;
 
 					case "url":
+						logger.info("********************Inside Commits Url****************");
 						Object urlObject = jsonObject.get(propName);
 						String urlValue = (String) urlObject;
 						commitsMain.setUrl(urlValue);
 						continue;
 
 					case "html_url":
+						logger.info("******************Inside Commits Html Url*******************");
 						Object htmlObject = jsonObject.get(propName);
 						String htmlValue = (String) htmlObject;
 						commitsMain.setHtmlUrl(htmlValue);
 						continue;
 
 					case "comments_url":
+						logger.info("*********************Inside Commits Comments Url***************");
 						Object commentsObject = jsonObject.get(propName);
 						String commentValue = (String) commentsObject;
 						commitsMain.setCommentsUrl(commentValue);
 						continue;
 
 					case "parents":
+						logger.info("***********************Inside Commits Parents *****************");
 						parents = new Parents();
+						List<Parents> listOfParents = new ArrayList<Parents>();
+						JSONArray parentJsonArray = (JSONArray) jsonObject.get(propName);
+						for (int jter = 0; jter < parentJsonArray.length(); jter++) {
+							logger.info("*****************Inside For Loop Of Parents *****************");
+							JSONObject parentJsonObject = (JSONObject) parentJsonArray.get(jter);
+							for (Object parentObj : parentJsonObject.keySet()) {
+								String parentValue = (String) parentObj;
+								switch (parentValue) {
+								case "sha":
+									Object sObject = parentJsonObject.get(parentValue);
+									String svalue = (String) sObject;
+									parents.setSha(svalue);
+									continue;
+
+								case "url":
+									Object uObject = parentJsonObject.get(parentValue);
+									String uValue = (String) uObject;
+									parents.setUrl(uValue);
+									continue;
+
+								case "html_url":
+
+									Object hObject = parentJsonObject.get(parentValue);
+									String hValue = (String) hObject;
+									parents.setHtmlUrl(hValue);
+									continue;
+
+								default:
+									logger.info("****************End of Parent Switch Case ****************");
+								}
+							}
+							listOfParents.add(parents);
+						}
+
+						commitsMain.setParents(listOfParents);
+						continue;
 
 					default:
-						logger.info("************************End of Switch Case Along******************");
+						logger.info("************************End of Entire Switch Case ******************");
 
 					}
 
@@ -452,16 +581,25 @@ public class CommitController {
 					commitsMain.setCommitter_id(committerToDB);
 				}
 
+				logger.info("******************Creating Main Commits Resource*********");
+				Commits commitsToDB = commitService.saveCommitsResource(commitsMain);
+				if (commitsToDB != null) {
+					listOfCommits.add(commitsToDB);
+				}
+
 			}
+			logger.info("*********Number of Commits = " + listOfCommits.size());
 
 			// throw new RuntimeException();
-		} catch (UnirestException | MyException e) {
+		} catch (UnirestException e) {
 			// TODO Auto-generated catch block
-			logger.error("****************Inside Exception ***************************");
+			logger.error("****************Inside Unirest Exception ***************************");
 			e.printStackTrace();
+		} catch (final MyException ex) {
+			logger.info(ex.getMessage());
 		}
-		return null;
 
+		return new ResponseEntity<List<Commits>>(listOfCommits, HttpStatus.CREATED);
 	}
 
 }

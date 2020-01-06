@@ -1,5 +1,7 @@
 package com.spring.dependencyInjection.service;
 
+import java.util.List;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -18,6 +20,7 @@ public class CommitterService {
 	private CommitterRepository committerRespository;
 
 	public Committer createCommitterResource(Committer committer) {
+
 		Committer committerToDB = null;
 		try {
 			committerToDB = committerRespository.save(committer);
@@ -28,5 +31,32 @@ public class CommitterService {
 			logger.error(ex.getMessage());
 		}
 		return committerToDB;
+	}
+
+	public Committer getCommitterById(Long id) {
+		Committer committerValueByID = null;
+		try {
+			committerValueByID = committerRespository.getCommitterByID(id);
+			if (committerValueByID == null) {
+				throw new MyException("Sorry Could Not Retrieve Instance of Committer");
+			}
+		} catch (final MyException ex) {
+			logger.error(ex.getMessage());
+		}
+		return committerValueByID;
+
+	}
+
+	public List<Committer> getCommitter() {
+		List<Committer> listOfCommitter = null;
+		try {
+			listOfCommitter = committerRespository.getAllCommitter();
+			if (listOfCommitter.size() == 0 || listOfCommitter == null) {
+				throw new MyException("Sorry Could Not Retrieve Instance of Committer");
+			}
+		} catch (final MyException ex) {
+			logger.info(ex.getMessage());
+		}
+		return listOfCommitter;
 	}
 }

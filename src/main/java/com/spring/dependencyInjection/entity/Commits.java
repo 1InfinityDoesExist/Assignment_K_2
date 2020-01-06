@@ -20,7 +20,6 @@ import org.hibernate.annotations.TypeDef;
 import org.hibernate.annotations.TypeDefs;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
-import com.amazonaws.services.codecommit.model.Commit;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 
 import io.swagger.annotations.ApiModel;
@@ -163,8 +162,8 @@ public class Commits implements Serializable {
 		return commit;
 	}
 
-	public void setCommit(Commit commit) {
-		this.commit = commit;
+	public void setCommit(Commit commitMain) {
+		this.commit = commitMain;
 	}
 
 	public String getUrl() {
