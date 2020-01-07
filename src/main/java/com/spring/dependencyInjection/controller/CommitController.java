@@ -1,6 +1,7 @@
 package com.spring.dependencyInjection.controller;
 
 import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -17,6 +18,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.itextpdf.text.log.SysoCounter;
 import com.mashape.unirest.http.HttpResponse;
 import com.mashape.unirest.http.JsonNode;
 import com.mashape.unirest.http.Unirest;
@@ -356,8 +358,11 @@ public class CommitController {
 
 									case "date":
 										Object dateObject = cAuthorObject.get(cAuthPropName);
-										LocalDateTime dateValue = (LocalDateTime) dateObject;
-										commitAuthorMain.setDate(dateValue);
+										String dateValue = (String) dateObject;
+										DateTimeFormatter formatter = DateTimeFormatter
+												.ofPattern("yyyy-MM-dd'T'HH:mm:ss'Z'");
+										LocalDateTime date = LocalDateTime.parse(dateValue, formatter);
+										commitAuthorMain.setDate(date);
 										continue;
 
 									default:
@@ -378,20 +383,34 @@ public class CommitController {
 
 									case "name":
 										Object nameObject = cCommitterObject.get(ccPropName);
+										logger.info("Commit Committer Name:- " + nameObject);
+										if (nameObject.equals(null)) {
+											commitCommitterMain.setName(null);
+											continue;
+
+										}
 										String nameValue = (String) nameObject;
 										commitCommitterMain.setName(nameValue);
 										continue;
 
 									case "email":
 										Object emailObject = cCommitterObject.get(ccPropName);
+										if (emailObject.equals(null)) {
+											commitCommitterMain.setEmail(null);
+											continue;
+										}
 										String emailValue = (String) emailObject;
 										commitCommitterMain.setEmail(emailValue);
 										continue;
 
 									case "date":
 										Object dateObject = cCommitterObject.get(ccPropName);
-										LocalDateTime dateValue = (LocalDateTime) dateObject;
-										commitCommitterMain.setDate(dateValue);
+										String date = (String) dateObject;
+										DateTimeFormatter formatter = DateTimeFormatter
+												.ofPattern("yyyy-MM-dd'T'HH:mm:ss'Z'");
+										LocalDateTime localDateTime = LocalDateTime.parse(date, formatter);
+
+										commitCommitterMain.setDate(localDateTime);
 										continue;
 
 									default:
@@ -457,24 +476,42 @@ public class CommitController {
 									switch (veriProp) {
 									case "verified":
 										Object verifidObject = verificationObject.get(veriProp);
+										if (verifidObject.equals(null)) {
+											commitVerification.setVerified(null);
+											continue;
+										}
 										Boolean verifiedValue = (Boolean) verifidObject;
 										commitVerification.setVerified(verifiedValue);
 										continue;
 
 									case "reason":
 										Object reasonObject = verificationObject.get(veriProp);
+										if (reasonObject.equals(null)) {
+											commitVerification.setReason(null);
+											continue;
+										}
 										String reasonValue = (String) reasonObject;
 										commitVerification.setReason(reasonValue);
 										continue;
 
 									case "signature":
 										Object signatureObject = verificationObject.get(veriProp);
+										if (signatureObject.equals(null)) {
+											logger.info("Inside Signature Null Value");
+											commitVerification.setSignature(null);
+											continue;
+										}
 										String signatureValue = (String) signatureObject;
+										logger.info("Commit Signature:- " + signatureValue);
 										commitVerification.setSignature(signatureValue);
 										continue;
 
 									case "payload":
 										Object payloadObject = verificationObject.get(veriProp);
+										if (payloadObject.equals(null)) {
+											commitVerification.setPayload(null);
+											continue;
+										}
 										String payloadValue = (String) payloadObject;
 										commitVerification.setPayload(payloadValue);
 										continue;
@@ -582,7 +619,12 @@ public class CommitController {
 				}
 
 				logger.info("******************Creating Main Commits Resource*********");
+				System.out.println("CommlentUrl---------->" + commitsMain.getCommentsUrl());
+				System.out.println("Committer--------->" + commitsMain.getCommitter_id());
+				System.out.println("Parents-------->" + commitsMain.getParents());
+				System.out.println("Commit-------->" + commitsMain.getCommit());
 				Commits commitsToDB = commitService.saveCommitsResource(commitsMain);
+
 				if (commitsToDB != null) {
 					listOfCommits.add(commitsToDB);
 				}

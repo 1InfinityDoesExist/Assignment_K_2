@@ -15,10 +15,13 @@ import java.sql.Types;
 import org.hibernate.HibernateException;
 import org.hibernate.engine.spi.SharedSessionContractImplementor;
 import org.hibernate.usertype.UserType;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 public class CommitType implements UserType {
+	private static final Logger logger = LoggerFactory.getLogger(CommitType.class);
 
 	@Override
 	public int[] sqlTypes() {
@@ -92,11 +95,14 @@ public class CommitType implements UserType {
 		try {
 			ByteArrayOutputStream baos = new ByteArrayOutputStream();
 			ObjectOutputStream oos = new ObjectOutputStream(baos);
-			oos.writeObject(baos);
+			logger.info("above of writeObject");
+			oos.writeObject(value);
+			logger.info("below of write Object");
 			oos.flush();
 			oos.close();
 			baos.close();
 			ByteArrayInputStream bais = new ByteArrayInputStream(baos.toByteArray());
+			logger.info("********Inside deepCopy of CommitType********");
 			return new ObjectInputStream(bais).readObject();
 		} catch (ClassNotFoundException | IOException ex) {
 			throw new HibernateException(ex.getMessage());

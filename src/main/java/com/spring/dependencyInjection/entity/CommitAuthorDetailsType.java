@@ -15,10 +15,13 @@ import java.sql.Types;
 import org.hibernate.HibernateException;
 import org.hibernate.engine.spi.SharedSessionContractImplementor;
 import org.hibernate.usertype.UserType;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 public class CommitAuthorDetailsType implements UserType {
+	private final static Logger logger = LoggerFactory.getLogger(CommitAuthorDetailsType.class);
 
 	@Override
 	public int[] sqlTypes() {
@@ -95,7 +98,9 @@ public class CommitAuthorDetailsType implements UserType {
 		try {
 			ByteArrayOutputStream bos = new ByteArrayOutputStream();
 			ObjectOutputStream oos = new ObjectOutputStream(bos);
+			logger.info("***********Commit Author Detiails Type Start*********");
 			oos.writeObject(value);
+			logger.info("*************Commit Author Details Type End****************");
 			oos.flush();
 			oos.close();
 			bos.close();
