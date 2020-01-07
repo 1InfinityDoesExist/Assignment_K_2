@@ -16,9 +16,9 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.itextpdf.text.log.SysoCounter;
 import com.mashape.unirest.http.HttpResponse;
 import com.mashape.unirest.http.JsonNode;
 import com.mashape.unirest.http.Unirest;
@@ -40,6 +40,7 @@ import com.spring.dependencyInjection.service.CommitterService;
 import com.spring.dependencyInjection.service.ErrorMapping;
 
 import io.swagger.annotations.ApiOperation;
+import io.swagger.annotations.ApiParam;
 
 @RestController
 @RequestMapping(path = "/api/object/commit")
@@ -650,6 +651,27 @@ public class CommitController {
 		}
 
 		return new ResponseEntity<List<Commits>>(listOfCommits, HttpStatus.CREATED);
+	}
+
+	@RequestMapping(path = "/get", method = RequestMethod.GET, produces = "application/json")
+	@ApiOperation(value = "/get", notes = "Get Commits By Id", response = Commits.class)
+	public ResponseEntity<?> getCommitsById(
+			@ApiParam(value = "id", required = true) @RequestParam(value = "id", required = true) Long id) {
+		Commits commitToDB = commitService.retrieveCommitsResourceById(id);
+		if (commitToDB == null) {
+			return new ResponseEntity<String>("Sorry No Id Found With Id:-" + id, HttpStatus.BAD_REQUEST);
+		}
+		return new ResponseEntity<Commits>(commitToDB, HttpStatus.OK);
+	}
+
+	@RequestMapping(path = "/get", method = RequestMethod.GET, produces = "application/json")
+	@ApiOperation(value = "/get", notes = "Retrieve All Commits From The DB", response = Commits.class, responseContainer = "LIST")
+	public ResponseEntity<?> getCommits() {
+		List<Commits> listOfCommits = commitService.retrieveAllCommits();
+		if (listOfCommits.size() == 0 || listOfCommits == null) {
+			return new ResponseEntity<String>("Sorry No Data Found For The Commits", HttpStatus.BAD_REQUEST);
+		}
+		return new ResponseEntity<List<Commits>>(listOfCommits, HttpStatus.BAD_REQUEST);
 	}
 
 }
