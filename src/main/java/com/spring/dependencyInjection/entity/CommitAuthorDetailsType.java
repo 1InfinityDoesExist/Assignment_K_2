@@ -30,7 +30,7 @@ public class CommitAuthorDetailsType implements UserType {
 	}
 
 	@Override
-	public Class returnedClass() {
+	public Class<?> returnedClass() {
 		// TODO Auto-generated method stub
 		return CommitAuthorDetails.class;
 	}
@@ -54,17 +54,14 @@ public class CommitAuthorDetailsType implements UserType {
 	public Object nullSafeGet(ResultSet rs, String[] names, SharedSessionContractImplementor session, Object owner)
 			throws HibernateException, SQLException {
 		// TODO Auto-generated method stub
-		final String cellContent = names[0];
+		final String cellContent = rs.getString(names[0]);
 		if (cellContent == null) {
 			return null;
 		}
-
 		try {
-
 			final ObjectMapper objectMapper = new ObjectMapper();
-			return objectMapper.readValue(cellContent.getBytes(), returnedClass());
-
-		} catch (final Exception ex) {
+			return objectMapper.readValue(cellContent.getBytes("UTF-8"), returnedClass());
+		} catch (final IOException ex) {
 			throw new RuntimeException("Failed to convert string:-" + ex.getMessage());
 		}
 	}
@@ -85,7 +82,7 @@ public class CommitAuthorDetailsType implements UserType {
 			stringWriter.flush();
 			stringWriter.close();
 			st.setObject(index, stringWriter.toString(), Types.OTHER);
-		} catch (final Exception ex) {
+		} catch (final IOException ex) {
 			throw new RuntimeException("Failed to Convert String :-" + ex.getMessage());
 		}
 

@@ -48,7 +48,7 @@ public class CommitVerificationTypes implements UserType {
 	public Object nullSafeGet(ResultSet rs, String[] names, SharedSessionContractImplementor session, Object owner)
 			throws HibernateException, SQLException {
 		// TODO Auto-generated method stub
-		final String cellContent = names[0];
+		final String cellContent = rs.getString(names[0]);
 		if (cellContent == null) {
 			return null;
 		}

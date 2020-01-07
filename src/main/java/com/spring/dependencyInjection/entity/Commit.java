@@ -1,5 +1,7 @@
 package com.spring.dependencyInjection.entity;
 
+import java.io.Serializable;
+
 import javax.persistence.Column;
 import javax.persistence.EntityListeners;
 
@@ -14,7 +16,7 @@ import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 		@TypeDef(name = "CommitTreeTypes", typeClass = CommitTreeTypes.class),
 		@TypeDef(name = "CommitVerificationTypes", typeClass = CommitVerificationTypes.class) })
 
-public class Commit {
+public class Commit implements Serializable {
 
 	@Column(columnDefinition = "jsonb")
 	@Type(type = "CommitAuthorDetailsType")
@@ -106,6 +108,67 @@ public class Commit {
 
 	public void setVerification(CommitVerification verification) {
 		this.verification = verification;
+	}
+
+	@Override
+	public int hashCode() {
+		final int prime = 31;
+		int result = 1;
+		result = prime * result + ((author == null) ? 0 : author.hashCode());
+		result = prime * result + ((commentCount == null) ? 0 : commentCount.hashCode());
+		result = prime * result + ((committer == null) ? 0 : committer.hashCode());
+		result = prime * result + ((message == null) ? 0 : message.hashCode());
+		result = prime * result + ((tree == null) ? 0 : tree.hashCode());
+		result = prime * result + ((url == null) ? 0 : url.hashCode());
+		result = prime * result + ((verification == null) ? 0 : verification.hashCode());
+		return result;
+	}
+
+	@Override
+	public boolean equals(Object obj) {
+		if (this == obj)
+			return true;
+		if (obj == null)
+			return false;
+		if (getClass() != obj.getClass())
+			return false;
+		Commit other = (Commit) obj;
+		if (author == null) {
+			if (other.author != null)
+				return false;
+		} else if (!author.equals(other.author))
+			return false;
+		if (commentCount == null) {
+			if (other.commentCount != null)
+				return false;
+		} else if (!commentCount.equals(other.commentCount))
+			return false;
+		if (committer == null) {
+			if (other.committer != null)
+				return false;
+		} else if (!committer.equals(other.committer))
+			return false;
+		if (message == null) {
+			if (other.message != null)
+				return false;
+		} else if (!message.equals(other.message))
+			return false;
+		if (tree == null) {
+			if (other.tree != null)
+				return false;
+		} else if (!tree.equals(other.tree))
+			return false;
+		if (url == null) {
+			if (other.url != null)
+				return false;
+		} else if (!url.equals(other.url))
+			return false;
+		if (verification == null) {
+			if (other.verification != null)
+				return false;
+		} else if (!verification.equals(other.verification))
+			return false;
+		return true;
 	}
 
 	@Override

@@ -96,6 +96,8 @@ public class CommitType implements UserType {
 			ByteArrayOutputStream baos = new ByteArrayOutputStream();
 			ObjectOutputStream oos = new ObjectOutputStream(baos);
 			logger.info("above of writeObject");
+
+			System.out.println(value);
 			oos.writeObject(value);
 			logger.info("below of write Object");
 			oos.flush();

@@ -618,11 +618,19 @@ public class CommitController {
 					commitsMain.setCommitter_id(committerToDB);
 				}
 
-				logger.info("******************Creating Main Commits Resource*********");
-				System.out.println("CommlentUrl---------->" + commitsMain.getCommentsUrl());
-				System.out.println("Committer--------->" + commitsMain.getCommitter_id());
-				System.out.println("Parents-------->" + commitsMain.getParents());
-				System.out.println("Commit-------->" + commitsMain.getCommit());
+				logger.info("Authord------------->" + commitsMain.getCommit().getAuthor().getEmail());
+				logger.info("Authord:-------------->" + commitsMain.getCommit().getAuthor().getName());
+				logger.info("Authord:-------------->" + commitsMain.getCommit().getAuthor().getDate());
+				logger.info("Committer:-------------->" + commitsMain.getCommit().getCommitter().getEmail());
+				logger.info("Committer:-------------->" + commitsMain.getCommit().getCommitter().getName());
+				logger.info("Committer:-------------->" + commitsMain.getCommit().getCommitter().getDate());
+				logger.info("Tree:-------------->" + commitsMain.getCommit().getTree().getSha());
+				logger.info("Tree:-------------->" + commitsMain.getCommit().getTree().getUrl());
+				logger.info("Verification:-------------->" + commitsMain.getCommit().getVerification().getPayload());
+				logger.info("Verification:-------------->" + commitsMain.getCommit().getVerification().getReason());
+				logger.info("Verification:-------------->" + commitsMain.getCommit().getVerification().getSignature());
+				logger.info("Verification:-------------->" + commitsMain.getCommit().getVerification().getVerified());
+
 				Commits commitsToDB = commitService.saveCommitsResource(commitsMain);
 
 				if (commitsToDB != null) {
