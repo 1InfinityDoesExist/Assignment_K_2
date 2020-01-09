@@ -3,7 +3,6 @@ scalar DateTime
 scalar Date
 scalar LocalDateTime
 
-
 type Author{
 	id : Long
 	login : String
@@ -23,9 +22,7 @@ type Author{
 	type : String
 	siteAdmin : Boolean
 	subscriptionsUrl : String
-	
 }
-
 
 type Commit{
 	author : CommitAuthorDetails
@@ -93,7 +90,6 @@ type CommitVerification{
 	signature : String
 	payload : String
 }
-
 
 type Parents {
 	sha :  Sting

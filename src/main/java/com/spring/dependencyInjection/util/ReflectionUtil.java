@@ -20,6 +20,8 @@ public class ReflectionUtil {
 	private static HashMap<String, String> objectBeanMap = new HashMap<String, String>() {
 		{
 			put("Commits", "com.spring.dependencyInjection.entity.Commits");
+			put("Author", "com.spring.dependencyInjection.entity.Author");
+			put("Committer", "com.spring.dependencyInjection.entity.Committer");
 
 		}
 	};

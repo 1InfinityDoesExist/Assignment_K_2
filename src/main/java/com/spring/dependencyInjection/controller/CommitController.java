@@ -21,6 +21,8 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
@@ -659,6 +661,8 @@ public class CommitController {
 	}
 
 	@RequestMapping(path = "/get", method = RequestMethod.GET, produces = "application/json")
+	@ResponseStatus(HttpStatus.OK)
+	@ResponseBody
 	@ApiOperation(value = "/get", notes = "Get Commits By Id", response = Commits.class)
 	public ResponseEntity<?> getCommitsById(
 			@ApiParam(value = "id", required = true) @RequestParam(value = "id", required = true) Long id) {
@@ -671,6 +675,8 @@ public class CommitController {
 
 	@RequestMapping(path = "/get1", method = RequestMethod.GET, produces = "application/json")
 	@ApiOperation(value = "/get1", notes = "Retrieve All Commits From The DB", response = Commits.class, responseContainer = "LIST")
+	@ResponseStatus(HttpStatus.OK)
+	@ResponseBody
 	public ResponseEntity<?> getCommits() {
 		List<Commits> listOfCommits = commitService.retrieveAllCommits();
 		if (listOfCommits.size() == 0 || listOfCommits == null) {
@@ -681,6 +687,8 @@ public class CommitController {
 
 	@RequestMapping(path = "/delete", method = RequestMethod.DELETE, produces = "text/plain")
 	@ApiOperation(value = "/delete", notes = "Delete Commits Resource Form the Database", response = String.class)
+	@ResponseStatus(HttpStatus.OK)
+	@ResponseBody
 	public ResponseEntity<?> deleteCommitsByid(@RequestParam(value = "id", required = true) Long id) {
 		String response = commitService.deleteCommitsByID(id);
 		if (response == null) {
@@ -691,6 +699,8 @@ public class CommitController {
 
 	@RequestMapping(path = "/update", method = RequestMethod.PATCH, produces = "application/json")
 	@ApiOperation(value = "/update", notes = "Partial Update", response = Commits.class)
+	@ResponseStatus(HttpStatus.OK)
+	@ResponseBody
 	public ResponseEntity<?> updateCommitsById(@Valid @RequestBody String commit,
 			@RequestParam(value = "id", required = true) Long id) throws JsonMappingException, JsonProcessingException,
 			ParseException, IllegalAccessException, IllegalArgumentException, InvocationTargetException, JSONException {
