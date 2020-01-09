@@ -645,10 +645,8 @@ public class CommitController {
 				if (commitsToDB != null) {
 					listOfCommits.add(commitsToDB);
 				}
-
 			}
 			logger.info("*********Number of Commits = " + listOfCommits.size());
-
 			// throw new RuntimeException();
 		} catch (UnirestException e) {
 			// TODO Auto-generated catch block
@@ -657,7 +655,6 @@ public class CommitController {
 		} catch (final MyException ex) {
 			logger.info(ex.getMessage());
 		}
-
 		return new ResponseEntity<List<Commits>>(listOfCommits, HttpStatus.CREATED);
 	}
 
@@ -697,12 +694,10 @@ public class CommitController {
 	public ResponseEntity<?> updateCommitsById(@Valid @RequestBody String commit,
 			@RequestParam(value = "id", required = true) Long id) throws JsonMappingException, JsonProcessingException,
 			ParseException, IllegalAccessException, IllegalArgumentException, InvocationTargetException, JSONException {
-
 		Commits commitFromDB = commitService.updateByID(commit, id);
 		if (commitFromDB == null) {
 			return new ResponseEntity<String>("Sorry Could Not Detete Commits From DB", HttpStatus.BAD_REQUEST);
 		}
-
 		return new ResponseEntity<Commits>(commitFromDB, HttpStatus.OK);
 		// return null;
 	}
