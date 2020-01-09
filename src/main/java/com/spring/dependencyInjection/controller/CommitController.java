@@ -662,7 +662,6 @@ public class CommitController {
 	}
 
 	@RequestMapping(path = "/get", method = RequestMethod.GET, produces = "application/json")
-
 	@ApiOperation(value = "/get", notes = "Get Commits By Id", response = Commits.class)
 	public ResponseEntity<?> getCommitsById(
 			@ApiParam(value = "id", required = true) @RequestParam(value = "id", required = true) Long id) {
@@ -673,8 +672,8 @@ public class CommitController {
 		return new ResponseEntity<Commits>(commitToDB, HttpStatus.OK);
 	}
 
-	@RequestMapping(path = "/get", method = RequestMethod.GET, produces = "application/json")
-	@ApiOperation(value = "/get", notes = "Retrieve All Commits From The DB", response = Commits.class, responseContainer = "LIST")
+	@RequestMapping(path = "/get1", method = RequestMethod.GET, produces = "application/json")
+	@ApiOperation(value = "/get1", notes = "Retrieve All Commits From The DB", response = Commits.class, responseContainer = "LIST")
 	public ResponseEntity<?> getCommits() {
 		List<Commits> listOfCommits = commitService.retrieveAllCommits();
 		if (listOfCommits.size() == 0 || listOfCommits == null) {
@@ -686,7 +685,6 @@ public class CommitController {
 	@RequestMapping(path = "/delete", method = RequestMethod.DELETE, produces = "text/plain")
 	@ApiOperation(value = "/delete", notes = "Delete Commits Resource Form the Database", response = String.class)
 	public ResponseEntity<?> deleteCommitsByid(@RequestParam(value = "id", required = true) Long id) {
-
 		String response = commitService.deleteCommitsByID(id);
 		if (response == null) {
 			return new ResponseEntity<String>("Sorry Could Not Delete The commits", HttpStatus.BAD_REQUEST);
