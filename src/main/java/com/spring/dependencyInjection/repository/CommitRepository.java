@@ -18,4 +18,7 @@ public interface CommitRepository extends CrudRepository<Commits, Long>, JpaRepo
 	@Query("Select Commits from #{#entityName} Commits")
 	public List<Commits> getAllAuthorResource();
 
+	
+	public void deleteCommitsById(Long id);
+
 }

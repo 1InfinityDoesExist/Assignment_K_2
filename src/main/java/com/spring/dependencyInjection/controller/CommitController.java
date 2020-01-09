@@ -1,24 +1,30 @@
 package com.spring.dependencyInjection.controller;
 
+import java.lang.reflect.InvocationTargetException;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
 
 import javax.transaction.Transactional;
+import javax.validation.Valid;
 
+import org.apache.log4j.Logger;
 import org.json.JSONArray;
+import org.json.JSONException;
 import org.json.JSONObject;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import org.json.simple.parser.ParseException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.JsonMappingException;
 import com.mashape.unirest.http.HttpResponse;
 import com.mashape.unirest.http.JsonNode;
 import com.mashape.unirest.http.Unirest;
@@ -46,7 +52,9 @@ import io.swagger.annotations.ApiParam;
 @RequestMapping(path = "/api/object/commit")
 public class CommitController {
 
-	private static final Logger logger = LoggerFactory.getLogger(CommitController.class);
+	// private static final Logger logger =
+	// LoggerFactory.getLogger(CommitController.class);
+	private static final Logger logger = Logger.getLogger(CommitController.class);
 
 	@Autowired
 	private ErrorMapping errorMapping;
@@ -654,6 +662,7 @@ public class CommitController {
 	}
 
 	@RequestMapping(path = "/get", method = RequestMethod.GET, produces = "application/json")
+
 	@ApiOperation(value = "/get", notes = "Get Commits By Id", response = Commits.class)
 	public ResponseEntity<?> getCommitsById(
 			@ApiParam(value = "id", required = true) @RequestParam(value = "id", required = true) Long id) {
@@ -672,6 +681,32 @@ public class CommitController {
 			return new ResponseEntity<String>("Sorry No Data Found For The Commits", HttpStatus.BAD_REQUEST);
 		}
 		return new ResponseEntity<List<Commits>>(listOfCommits, HttpStatus.BAD_REQUEST);
+	}
+
+	@RequestMapping(path = "/delete", method = RequestMethod.DELETE, produces = "text/plain")
+	@ApiOperation(value = "/delete", notes = "Delete Commits Resource Form the Database", response = String.class)
+	public ResponseEntity<?> deleteCommitsByid(@RequestParam(value = "id", required = true) Long id) {
+
+		String response = commitService.deleteCommitsByID(id);
+		if (response == null) {
+			return new ResponseEntity<String>("Sorry Could Not Delete The commits", HttpStatus.BAD_REQUEST);
+		}
+		return new ResponseEntity<String>(response, HttpStatus.OK);
+	}
+
+	@RequestMapping(path = "/update", method = RequestMethod.PATCH, produces = "application/json")
+	@ApiOperation(value = "/update", notes = "Partial Update", response = Commits.class)
+	public ResponseEntity<?> updateCommitsById(@Valid @RequestBody String commit,
+			@RequestParam(value = "id", required = true) Long id) throws JsonMappingException, JsonProcessingException,
+			ParseException, IllegalAccessException, IllegalArgumentException, InvocationTargetException, JSONException {
+
+		Commits commitFromDB = commitService.updateByID(commit, id);
+		if (commitFromDB == null) {
+			return new ResponseEntity<String>("Sorry Could Not Detete Commits From DB", HttpStatus.BAD_REQUEST);
+		}
+
+		return new ResponseEntity<Commits>(commitFromDB, HttpStatus.OK);
+		// return null;
 	}
 
 }
