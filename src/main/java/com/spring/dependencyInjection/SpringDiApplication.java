@@ -8,7 +8,7 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 public class SpringDiApplication {
 
 	public static void main(String[] args) {
-		PropertyConfigurator.configure("log4j.properties");
+		// PropertyConfigurator.configure("log4j.properties");
 		SpringApplication.run(SpringDiApplication.class, args);
 	}
 

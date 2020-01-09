@@ -1,0 +1,107 @@
+
+scalar DateTime
+scalar Date
+scalar LocalDateTime
+
+
+type Author{
+	id : Long
+	login : String
+    nodeId : String
+    avatarUrl : String
+    gravatarId : String
+    url : String
+    htmlUrl : String
+    followersUrl : String
+    followingUrl : String
+	gistsUrl : String
+	starredUrl : String
+	organizationsUrl : String
+	reposUrl : String
+	eventsUrl : String
+	receivedEventsUrl : String
+	type : String
+	siteAdmin : Boolean
+	subscriptionsUrl : String
+	
+}
+
+
+type Commit{
+	author : CommitAuthorDetails
+	 message : String
+	 tree : CommitTree
+	 url : String
+	 commentCount : Integer
+	 verification : CommitVerification
+	 committer : Committer
+}
+
+type CommitAuthorDetails{
+	name : String
+	email : String
+	date : LocalDateType
+}
+
+type CommitCommitter{
+	name : String
+	email : String
+	date : LocalDateTime
+}
+
+type Commits{	
+		id : Long
+		sha : String
+		nodeId : String
+		commit : String
+		url : String
+		htmlUrl : String
+		commentsUrl : String
+		parents :List<Parents>
+}
+
+type Committer{
+		id : Long
+		login : String
+		nodeId : String
+		avatorUrl : String
+		gravatarId : String
+		url : String
+		htmlUrl : String
+		followersUrl : String
+		followingUrl : String
+		gistsUrl : String
+		starredUrl : String
+		subscriptionsUrl : String
+		organizationsUrl : String
+		reposUrl : String
+		eventsUrl : String
+		receivedEventsUrl : String
+		type : String
+		siteAdmin : Boolean
+}
+
+type CommitTree{
+	sha : String
+	url : String
+}
+
+
+type CommitVerification{
+	verified : Boolean
+	reason : String 
+	signature : String
+	payload : String
+}
+
+
+type Parents {
+	sha :  Sting
+	url : String
+	htmlUrl : String
+}
+
+
+
+
+	 
