@@ -97,9 +97,14 @@ public class AuthorController {
 		return new ResponseEntity<String>(response, HttpStatus.OK);
 	}
 
+	@RequestMapping(path = "/update", method = RequestMethod.PATCH, produces = "application/json")
+	@ApiOperation(value = "/update", notes = "For Updating AuthorResource ", response = Author.class)
+	@ResponseStatus(HttpStatus.OK)
+	@ResponseBody
 	public ResponseEntity<?> updateAuthorById(@RequestBody String author,
 			@ApiParam(value = "id", required = true) @RequestParam(value = "id", required = true) Long id)
-			throws JsonMappingException, JsonProcessingException, IllegalAccessException, IllegalArgumentException, InvocationTargetException, JSONException {
+			throws JsonMappingException, JsonProcessingException, IllegalAccessException, IllegalArgumentException,
+			InvocationTargetException, JSONException {
 
 		Author authorFromDB = authorService.updateAuthorById(author, id);
 		if (authorFromDB == null) {
