@@ -89,7 +89,6 @@ public class AuthorController {
 	@ResponseBody
 	public ResponseEntity<?> deleteAuthorByID(
 			@ApiParam(value = "id", required = true) @RequestParam(value = "id", required = true) Long id) {
-
 		String response = authorService.deleteAuthorResource(id);
 		if (response.equals("") || response == null) {
 			return new ResponseEntity<String>("Sorry Could Not Remove Resource From DB", HttpStatus.BAD_REQUEST);
@@ -110,7 +109,6 @@ public class AuthorController {
 		if (authorFromDB == null) {
 			return new ResponseEntity<String>("Sorry Coudl Not Update The author resource", HttpStatus.BAD_REQUEST);
 		}
-
 		return new ResponseEntity<Author>(authorFromDB, HttpStatus.OK);
 
 	}

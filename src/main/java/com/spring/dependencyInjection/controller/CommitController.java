@@ -689,7 +689,8 @@ public class CommitController {
 	@ApiOperation(value = "/delete", notes = "Delete Commits Resource Form the Database", response = String.class)
 	@ResponseStatus(HttpStatus.OK)
 	@ResponseBody
-	public ResponseEntity<?> deleteCommitsByid(@RequestParam(value = "id", required = true) Long id) {
+	public ResponseEntity<?> deleteCommitsByid(
+			@ApiParam(value = "id", required = true) @RequestParam(value = "id", required = true) Long id) {
 		String response = commitService.deleteCommitsByID(id);
 		if (response == null) {
 			return new ResponseEntity<String>("Sorry Could Not Delete The commits", HttpStatus.BAD_REQUEST);
@@ -702,8 +703,9 @@ public class CommitController {
 	@ResponseStatus(HttpStatus.OK)
 	@ResponseBody
 	public ResponseEntity<?> updateCommitsById(@Valid @RequestBody String commit,
-			@RequestParam(value = "id", required = true) Long id) throws JsonMappingException, JsonProcessingException,
-			ParseException, IllegalAccessException, IllegalArgumentException, InvocationTargetException, JSONException {
+			@ApiParam(value = "id", required = true) @RequestParam(value = "id", required = true) Long id)
+			throws JsonMappingException, JsonProcessingException, ParseException, IllegalAccessException,
+			IllegalArgumentException, InvocationTargetException, JSONException {
 		Commits commitFromDB = commitService.updateByID(commit, id);
 		if (commitFromDB == null) {
 			return new ResponseEntity<String>("Sorry Could Not Detete Commits From DB", HttpStatus.BAD_REQUEST);

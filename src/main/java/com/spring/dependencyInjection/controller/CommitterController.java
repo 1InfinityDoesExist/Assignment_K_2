@@ -31,6 +31,7 @@ import com.spring.dependencyInjection.service.CommitterService;
 
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
+import io.swagger.annotations.ApiParam;
 
 @RestController
 @RequestMapping(path = "/api/object")
@@ -64,7 +65,8 @@ public class CommitterController {
 	@ApiOperation(value = "/create", notes = "Get Resource", produces = "application/json")
 	@ResponseBody
 	@ResponseStatus(HttpStatus.OK)
-	public ResponseEntity<?> getCommitter(@RequestParam(value = "id", required = true) Long id) {
+	public ResponseEntity<?> getCommitter(
+			@ApiParam(value = "id", required = true) @RequestParam(value = "id", required = true) Long id) {
 
 		Committer committer = committerService.getCommitterById(id);
 		if (committer == null) {
@@ -86,10 +88,11 @@ public class CommitterController {
 	}
 
 	@RequestMapping(path = "/delete", method = RequestMethod.DELETE, produces = "applicaition/json")
-	@ApiOperation(value = "/delete", notes = "Commiter ")
+	@ApiOperation(value = "/delete", notes = "Remove Committer Resource By ID", response = String.class)
 	@ResponseBody
 	@ResponseStatus(HttpStatus.OK)
-	public ResponseEntity<?> deleteCommitterById(@RequestParam(value = "id", required = true) Long id) {
+	public ResponseEntity<?> deleteCommitterById(
+			@ApiParam(value = "id", required = true) @RequestParam(value = "id", required = true) Long id) {
 		String response = committerService.deleteCommitterByID(id);
 		if (response == null) {
 			return new ResponseEntity<String>("Sorry Could Not Delete Committer By ID", HttpStatus.BAD_REQUEST);
@@ -98,12 +101,13 @@ public class CommitterController {
 	}
 
 	@RequestMapping(path = "/update", method = RequestMethod.PATCH, produces = "application/json")
-	@ApiOperation(value = "/update", notes = "Update Committer By ID")
+	@ApiOperation(value = "/update", notes = "Update Committer By ID", response = Committer.class)
 	@ResponseBody
 	@ResponseStatus(HttpStatus.OK)
 	public ResponseEntity<?> updateCommiterByID(@RequestBody String committer,
-			@RequestParam(value = "id", required = true) Long id) throws JsonMappingException, JsonProcessingException,
-			IllegalAccessException, IllegalArgumentException, InvocationTargetException, JSONException, ParseException {
+			@ApiParam(value = "id", required = true) @RequestParam(value = "id", required = true) Long id)
+			throws JsonMappingException, JsonProcessingException, IllegalAccessException, IllegalArgumentException,
+			InvocationTargetException, JSONException, ParseException {
 
 		Committer committerFromDB = committerService.updateCommitterByID(committer, id);
 		if (committerFromDB != null) {
