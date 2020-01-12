@@ -34,7 +34,7 @@ import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiParam;
 
 @RestController
-@RequestMapping(path = "/api/object")
+@RequestMapping(path = "/api/object/committer")
 @Api(value = "/api/object", description = "Commiiter Crud Api Operation")
 public class CommitterController {
 

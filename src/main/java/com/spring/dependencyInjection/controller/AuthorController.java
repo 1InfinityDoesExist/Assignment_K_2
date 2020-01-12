@@ -104,13 +104,11 @@ public class AuthorController {
 			@ApiParam(value = "id", required = true) @RequestParam(value = "id", required = true) Long id)
 			throws JsonMappingException, JsonProcessingException, IllegalAccessException, IllegalArgumentException,
 			InvocationTargetException, JSONException {
-
 		Author authorFromDB = authorService.updateAuthorById(author, id);
 		if (authorFromDB == null) {
 			return new ResponseEntity<String>("Sorry Coudl Not Update The author resource", HttpStatus.BAD_REQUEST);
 		}
 		return new ResponseEntity<Author>(authorFromDB, HttpStatus.OK);
-
 	}
 
 }
